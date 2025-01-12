@@ -9,4 +9,4 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class OrderData {
     private String ingredients;
-    }
+}

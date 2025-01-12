@@ -14,7 +14,7 @@ public class UserApi extends RestApi {
     public static final String DELETE_USER_URI = "api/auth/user";
 
     @Step("Создаем пользователя")
-    public ValidatableResponse createUser(UserData user){
+    public ValidatableResponse createUser(UserData user) {
         return given()
                 .spec(requestSpecification())
                 .and()
@@ -25,7 +25,7 @@ public class UserApi extends RestApi {
     }
 
     @Step("Логинимся пользователем")
-    public ValidatableResponse loginUser(UserData user){
+    public ValidatableResponse loginUser(UserData user) {
         return given()
                 .spec(requestSpecification())
                 .and()
@@ -36,10 +36,10 @@ public class UserApi extends RestApi {
     }
 
     @Step("Изменяем данные пользователя")
-    public ValidatableResponse changeUserData(UserData user,String accessToken){
+    public ValidatableResponse changeUserData(UserData user, String accessToken) {
         return given()
                 .spec(requestSpecification())
-                .header("Authorization",accessToken)
+                .header("Authorization", accessToken)
                 .and()
                 .body(user)
                 .when()
@@ -48,7 +48,7 @@ public class UserApi extends RestApi {
     }
 
     @Step("Изменяем данные без токена")
-    public ValidatableResponse changeUserData(UserData user){
+    public ValidatableResponse changeUserData(UserData user) {
         return given()
                 .spec(requestSpecification())
                 .and()
@@ -59,10 +59,10 @@ public class UserApi extends RestApi {
     }
 
     @Step("Удаляем пользователя")
-    public ValidatableResponse deleteUser(String accessToken){
+    public ValidatableResponse deleteUser(String accessToken) {
         return given()
                 .spec(requestSpecification())
-                .header("Authorization",accessToken)
+                .header("Authorization", accessToken)
                 .and()
                 .when()
                 .delete(DELETE_USER_URI)

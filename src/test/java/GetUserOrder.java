@@ -1,4 +1,3 @@
-import RandomGenerators.Generator;
 import api.OrderApi;
 import api.UserApi;
 import io.qameta.allure.Description;
@@ -10,30 +9,39 @@ import org.apache.http.HttpStatus;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
+import random.generators.Generator;
+
 import static org.hamcrest.CoreMatchers.equalTo;
 
 public class GetUserOrder {
-    private UserApi userApi = new UserApi();
-    private OrderApi orderApi = new OrderApi();;
-    private Generator generator = new Generator();
+    private final UserApi userApi = new UserApi();
+    private final OrderApi orderApi = new OrderApi();
+    private final Generator generator = new Generator();
 
     private UserData user;
     private ValidatableResponse ingredientListResponse;
     private ValidatableResponse createOrderResponse;
     private ValidatableResponse getSpecificOrderResponse;
     private String accessToken;
+    private String ingredientId;
+    private OrderData orderData;
 
     @Before
     public void setUp() {
 
         user = new UserData(generator.generateEmail(5), generator.generatePassword(5), generator.generateUserName(6));
         accessToken = userApi.createUser(user).extract().jsonPath().getString("accessToken");
+
+        ingredientListResponse = orderApi.getListOfIngredients();
+        ingredientId = generator.getRandomId(ingredientListResponse);
+        orderData = new OrderData(ingredientId);
+        createOrderResponse = orderApi.createOrder(orderData, accessToken).log().all();
     }
 
     @After
-    public void cleanUp(){
+    public void cleanUp() {
 
-        if (accessToken == null || accessToken.isEmpty()){
+        if (accessToken == null || accessToken.isEmpty()) {
             System.out.println("Message: Токен пустой. Удаление токена производиться не будет");
             return;
         }
@@ -49,42 +57,22 @@ public class GetUserOrder {
     @Test
     @DisplayName("Получение заказов конкретного пользователя")
     @Description("Ожидаем 200 ок, создаем заказ, вызываем ручку, сравниваем с ингредиентом")
-    public void getSpecificUserOrderTest(){
+    public void getSpecificUserOrderTest() {
 
-        //Сохраняем респонс от листа с ингредиентами
-        ingredientListResponse = orderApi.getListOfIngredients();
-
-        //Тянем 1 рандомный ингредиент id из листа с ответом
-        String ingredientId = generator.getRandomId(ingredientListResponse);
-
-        //Создаем заказ
-        OrderData orderData = new OrderData(ingredientId);
-        createOrderResponse = orderApi.createOrder(orderData).log().all();
-
-        getSpecificOrderResponse = orderApi.getOrderFromSpecificUser(orderData).log().all();
+        getSpecificOrderResponse = orderApi.getOrderFromSpecificUser(orderData, accessToken).log().all();
 
         //Проверка
         getSpecificOrderResponse.log().all()
                 .assertThat()
-                .statusCode(HttpStatus.SC_UNAUTHORIZED)
-                .body("success", equalTo(false))
-                .body("message", equalTo("You should be authorised"));
+                .statusCode(HttpStatus.SC_OK)
+                .body("success", equalTo(true))
+                .body("orders[0].ingredients[0]", equalTo(ingredientId));
     }
 
     @Test
     @DisplayName("Ошибка при получения заказа от пользователья без авторизации")
     @Description("Ожидаем 401 Unauthorized, создаем заказ, вызываем ручку")
-    public void getSpecificUserOrderNoAuthorizationTest(){
-
-        //Сохраняем респонс от листа с ингредиентами
-        ingredientListResponse = orderApi.getListOfIngredients();
-
-        //Тянем 1 рандомный ингредиент id из листа с ответом
-        String ingredientId = generator.getRandomId(ingredientListResponse);
-
-        //Создаем заказ
-        OrderData orderData = new OrderData(ingredientId);
-        createOrderResponse = orderApi.createOrder(orderData).log().all();
+    public void getSpecificUserOrderNoAuthorizationTest() {
 
         getSpecificOrderResponse = orderApi.getOrderFromSpecificUser(orderData).log().all();
 

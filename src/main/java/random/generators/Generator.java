@@ -1,4 +1,4 @@
-package RandomGenerators;
+package random.generators;
 
 import io.restassured.response.ValidatableResponse;
 import org.apache.commons.text.RandomStringGenerator;
@@ -11,7 +11,7 @@ public class Generator {
     private List<Object> dataArray;
     private int ingredientIndex;
 
-    public String getRandomId(ValidatableResponse response){
+    public String getRandomId(ValidatableResponse response) {
 
         dataArray = response.extract().jsonPath().getList("data");
         int length = dataArray.size();
@@ -59,7 +59,6 @@ public class Generator {
 
         return generatedUserName.toLowerCase();
     }
-
 
 
 }

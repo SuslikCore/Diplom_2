@@ -1,4 +1,3 @@
-import RandomGenerators.Generator;
 import api.UserApi;
 import io.qameta.allure.Description;
 import io.qameta.allure.junit4.DisplayName;
@@ -8,6 +7,7 @@ import org.apache.http.HttpStatus;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
+import random.generators.Generator;
 
 import static org.hamcrest.CoreMatchers.equalTo;
 
@@ -17,7 +17,7 @@ public class CreateUserTests {
     private UserApi userApi;
     private ValidatableResponse createResponse;
     private ValidatableResponse response;
-    private Generator generator = new Generator();
+    private final Generator generator = new Generator();
 
     @Before
     public void setUp() {
@@ -25,17 +25,17 @@ public class CreateUserTests {
     }
 
     @After
-    public void cleanUp(){
+    public void cleanUp() {
 
         //Получаем и сохраняем accessToken
         String accessToken = createResponse.extract().jsonPath().getString("accessToken");
 
-        if (accessToken == null || accessToken.isEmpty()){
+        if (accessToken == null || accessToken.isEmpty()) {
             System.out.println("Message: Токен пустой. Удаление токена производиться не будет");
             return;
         }
         try {
-                userApi.deleteUser(accessToken).log().all();
+            userApi.deleteUser(accessToken).log().all();
         } catch (Exception e) {
             System.out.println("Не удалось удалить пользователя");
             throw new RuntimeException(e);
@@ -46,7 +46,7 @@ public class CreateUserTests {
     @Test
     @DisplayName("Создание валидного пользователя")
     @Description("Заполняем все поля")
-    public void userCanBeCreatedTest(){
+    public void userCanBeCreatedTest() {
 
         user = new UserData(generator.generateEmail(5), generator.generatePassword(5), generator.generateUserName(6));
 
@@ -66,7 +66,7 @@ public class CreateUserTests {
     @Test
     @DisplayName("Создание пользователя, который уже был создан")
     @Description("Вызываем создание пользователя два раза с одинаковыми данными -> Возвращает ошибку 403 forbidden")
-    public void CantCreateExistedUserTest(){
+    public void CantCreateExistedUserTest() {
 
         user = new UserData(generator.generateEmail(5), generator.generatePassword(5), generator.generateUserName(6));
 
@@ -85,7 +85,7 @@ public class CreateUserTests {
     @Test
     @DisplayName("Создание пользователя без почты")
     @Description("Вернет ошибку 403 Forbidden")
-    public void userCantBeCreatedWithoutEmailTest(){
+    public void userCantBeCreatedWithoutEmailTest() {
 
         user = new UserData("", generator.generatePassword(5), generator.generateUserName(6));
 
@@ -104,7 +104,7 @@ public class CreateUserTests {
     @Test
     @DisplayName("Создание пользователя без пароля")
     @Description("Вернет ошибку 403 Forbidden")
-    public void userCantBeCreatedWithoutPasswordTest(){
+    public void userCantBeCreatedWithoutPasswordTest() {
         user = new UserData(generator.generateEmail(5), "", generator.generateUserName(6));
 
         // Создаем пользователя и сохраняем ответ в createResponse
@@ -122,7 +122,7 @@ public class CreateUserTests {
     @Test
     @DisplayName("Создание пользователя без имени")
     @Description("Вернет ошибку 403 Forbidden")
-    public void userCantBeCreatedWithoutNameTest(){
+    public void userCantBeCreatedWithoutNameTest() {
         user = new UserData(generator.generateEmail(5), generator.generatePassword(5), "");
 
         // Создаем пользователя и сохраняем ответ в createResponse

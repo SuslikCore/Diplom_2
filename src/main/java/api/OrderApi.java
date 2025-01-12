@@ -6,17 +6,17 @@ import model.OrderData;
 
 import static io.restassured.RestAssured.given;
 
-public class OrderApi extends RestApi{
+public class OrderApi extends RestApi {
 
     public static final String CREATE_ORDER_URI = "api/orders";
     public static final String GET_ORDER_FROM_SPECIFIC_USER_URI = "api/orders";
     public static final String GET_LIST_OF_INGREDIENTS = "api/ingredients";
 
     @Step("Создаем заказ c авторизацией")
-    public ValidatableResponse createOrder(OrderData orderData, String accessToken){
+    public ValidatableResponse createOrder(OrderData orderData, String accessToken) {
         return given()
                 .spec(requestSpecification())
-                .header("Authorization",accessToken)
+                .header("Authorization", accessToken)
                 .and()
                 .body(orderData)
                 .when()
@@ -25,7 +25,7 @@ public class OrderApi extends RestApi{
     }
 
     @Step("Создаем заказ без авторизации")
-    public ValidatableResponse createOrder(OrderData orderData){
+    public ValidatableResponse createOrder(OrderData orderData) {
         return given()
                 .spec(requestSpecification())
                 .and()
@@ -36,7 +36,7 @@ public class OrderApi extends RestApi{
     }
 
     @Step("Получить данные об ингредиентах")
-    public ValidatableResponse getListOfIngredients(){
+    public ValidatableResponse getListOfIngredients() {
         return given()
                 .spec(requestSpecification())
                 .and()
@@ -46,10 +46,10 @@ public class OrderApi extends RestApi{
     }
 
     @Step("Получаем заказ от конкретного пользователя")
-    public ValidatableResponse getOrderFromSpecificUser(OrderData orderData ,String accessToken){
+    public ValidatableResponse getOrderFromSpecificUser(OrderData orderData, String accessToken) {
         return given()
                 .spec(requestSpecification())
-                .header("Authorization",accessToken)
+                .header("Authorization", accessToken)
                 .and()
                 .body(orderData)
                 .when()
@@ -58,7 +58,7 @@ public class OrderApi extends RestApi{
     }
 
     @Step("Получаем заказ от конкретного пользователя без авторизации")
-    public ValidatableResponse getOrderFromSpecificUser(OrderData orderData){
+    public ValidatableResponse getOrderFromSpecificUser(OrderData orderData) {
         return given()
                 .spec(requestSpecification())
                 .and()

@@ -1,4 +1,3 @@
-import RandomGenerators.Generator;
 import api.UserApi;
 import io.qameta.allure.Description;
 import io.qameta.allure.junit4.DisplayName;
@@ -8,6 +7,7 @@ import org.apache.http.HttpStatus;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
+import random.generators.Generator;
 
 import static org.hamcrest.CoreMatchers.equalTo;
 
@@ -18,7 +18,7 @@ public class ChangeDataUserTests {
     private UserApi userApi;
     private ValidatableResponse createResponse;
     private ValidatableResponse response;
-    private Generator generator = new Generator();
+    private final Generator generator = new Generator();
 
     @Before
     public void setUp() {
@@ -26,8 +26,8 @@ public class ChangeDataUserTests {
     }
 
     @After
-    public void cleanUp(){
-        if (accessToken == null || accessToken.isEmpty()){
+    public void cleanUp() {
+        if (accessToken == null || accessToken.isEmpty()) {
             System.out.println("Сообщение: Токен пустой. Удаление токена производиться не будет");
             return;
         }
@@ -42,10 +42,10 @@ public class ChangeDataUserTests {
     @Test
     @DisplayName("Изменение email пользователя c авторизацией")
     @Description("Изменяем поле email и получаем ответ 200 ОК")
-    public void changeUserEmailDataTest(){
+    public void changeUserEmailDataTest() {
 
         userCreateData = new UserData(generator.generateEmail(5), generator.generatePassword(5), generator.generateUserName(6));
-        userChangedData = new UserData(generator.generateEmail(5),"",generator.generateUserName(6));
+        userChangedData = new UserData(generator.generateEmail(5), "", generator.generateUserName(6));
 
         // Создаем пользователя и сохраняем ответ в createResponse
         createResponse = userApi.createUser(userCreateData).log().all();
@@ -62,7 +62,7 @@ public class ChangeDataUserTests {
     @Test
     @DisplayName("Изменение поле name пользователя c авторизацией")
     @Description("Изменяем поле name и получаем ответ 200 ОК")
-    public void changeUserNameDataTest(){
+    public void changeUserNameDataTest() {
 
         userCreateData = new UserData(generator.generateEmail(5), generator.generatePassword(5), generator.generateUserName(6));
         userChangedData = new UserData(generator.generateEmail(5), "", generator.generateUserName(6));
@@ -82,7 +82,7 @@ public class ChangeDataUserTests {
     @Test
     @DisplayName("Ошибка при изменении поля email пользователя без авторизации")
     @Description("При изменении поля email без авторизации получаем ответ 401 UNAUTHORIZED")
-    public void cantChangeEmailDataWithNoAuthorizationTest(){
+    public void cantChangeEmailDataWithNoAuthorizationTest() {
 
         //Тестовые данные
         userCreateData = new UserData(generator.generateEmail(5), generator.generatePassword(5), generator.generateUserName(6));
@@ -104,7 +104,7 @@ public class ChangeDataUserTests {
     @Test
     @DisplayName("Ошибка при изменении поля name пользователя без авторизации")
     @Description("При изменении поля name без авторизации получаем ответ 401 UNAUTHORIZED")
-    public void cantChangeNameDataWithNoAuthorizationTest(){
+    public void cantChangeNameDataWithNoAuthorizationTest() {
 
         //Тестовые данные
         userCreateData = new UserData(generator.generateEmail(5), generator.generatePassword(5), generator.generateUserName(6));

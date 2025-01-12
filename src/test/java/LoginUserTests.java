@@ -1,4 +1,3 @@
-import RandomGenerators.Generator;
 import api.UserApi;
 import io.qameta.allure.Description;
 import io.qameta.allure.junit4.DisplayName;
@@ -8,6 +7,7 @@ import org.apache.http.HttpStatus;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
+import random.generators.Generator;
 
 import static org.hamcrest.CoreMatchers.equalTo;
 
@@ -18,7 +18,7 @@ public class LoginUserTests {
     private UserApi userApi;
     private ValidatableResponse createResponse;
     private ValidatableResponse response;
-    private Generator generator = new Generator();
+    private final Generator generator = new Generator();
 
     @Before
     public void setUp() {
@@ -26,12 +26,12 @@ public class LoginUserTests {
     }
 
     @After
-    public void cleanUp(){
+    public void cleanUp() {
 
         //Получаем и сохраняем accessToken
         String accessToken = createResponse.extract().jsonPath().getString("accessToken");
 
-        if (accessToken == null || accessToken.isEmpty()){
+        if (accessToken == null || accessToken.isEmpty()) {
             System.out.println("Message: Токен пустой. Удаление токена производиться не будет");
             return;
         }
@@ -47,7 +47,7 @@ public class LoginUserTests {
     @Test
     @DisplayName("Логин с валидными данными")
     @Description("Ожидаем 200 ок и используем 2е данных userCreateData и userLoginData")
-    public void userCanLoginWithAllParametersTest(){
+    public void userCanLoginWithAllParametersTest() {
         userCreateData = new UserData(generator.generateEmail(5), generator.generatePassword(5), generator.generateUserName(6));
 
         userLoginData = new UserData(userCreateData.getEmail(), userCreateData.getPassword());
@@ -68,7 +68,7 @@ public class LoginUserTests {
     @Test
     @DisplayName("Логин с неверным логином")
     @Description("Создаем пользователя и используем другую почту при логине -> Возвращает 401")
-    public void invalidEmailUserLoginTest(){
+    public void invalidEmailUserLoginTest() {
         userCreateData = new UserData(generator.generateEmail(5), generator.generatePassword(5), generator.generateUserName(6));
         userLoginData = new UserData(generator.generateEmail(5), userCreateData.getPassword());
 
@@ -88,7 +88,7 @@ public class LoginUserTests {
     @Test
     @DisplayName("Логин с неверным паролем")
     @Description("Создаем пользователя и используем другой пароль при логине -> Возвращает 401")
-    public void invalidPasswordUserLoginTest(){
+    public void invalidPasswordUserLoginTest() {
         userCreateData = new UserData(generator.generateEmail(5), generator.generatePassword(5), generator.generateUserName(6));
         userLoginData = new UserData(userCreateData.getEmail(), generator.generatePassword(5));
 
